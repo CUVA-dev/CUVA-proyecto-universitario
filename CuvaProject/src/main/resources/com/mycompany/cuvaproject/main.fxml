@@ -20,14 +20,6 @@
                   <Insets bottom="-15.0" />
                </VBox.margin>
             </Button>
-            <Button id="btnRegistrarse" mnemonicParsing="false" onAction="#actionRegister" prefHeight="25.0" prefWidth="140.0" styleClass="boton-secundario" text="Registrarse" textAlignment="JUSTIFY">
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="-150.0" />
-               </VBox.margin>
-            </Button>
          </children>
          <padding>
             <Insets top="100.0" />

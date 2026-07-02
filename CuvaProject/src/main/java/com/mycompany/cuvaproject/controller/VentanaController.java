@@ -32,6 +32,11 @@ public class VentanaController implements Initializable {
     private void showBinnacle(ActionEvent event) {
         changeView("/com/mycompany/cuvaproject/Bitacora.fxml");
     }
+    @FXML
+    
+    private void showCreateUser(ActionEvent event) {
+        changeView("/com/mycompany/cuvaproject/register.fxml");
+    }
     
     @FXML
     private void closeSesion(ActionEvent event) {

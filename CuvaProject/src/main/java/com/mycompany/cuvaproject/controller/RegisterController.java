@@ -76,6 +76,7 @@ public class RegisterController implements Initializable {
         // Aquí guardas en tu base de datos como Invitado
         }
         // Creación del usuario
+        
         serviceUser service = new serviceUser();
         service.create(nameValue, lastNameValue, idValue, passwordValue, emailValue, postValue, rolValue);
         

@@ -8,10 +8,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -20,9 +20,9 @@
    <children>
       <VBox alignment="CENTER" spacing="25.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="BOTTOM_CENTER" fillWidth="false" minHeight="700.0" minWidth="1390.0" prefHeight="720.0" prefWidth="1400.0" spacing="20.0" styleClass="formulario-tarjeta">
+            <VBox alignment="CENTER" fillWidth="false" spacing="20.0" styleClass="formulario-tarjeta">
                <padding>
-                  <Insets bottom="60.0" left="40.0" right="60.0" top="10.0" />
+                  <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
                </padding>
                <children>
                   
@@ -90,7 +90,20 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="post" maxHeight="50.0" maxWidth="120.0" styleClass="input-formulario" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        
+                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                           <children>
+                              <TextField fx:id="post" maxHeight="50.0" maxWidth="120.0" styleClass="input-formulario" />
+                              <ComboBox fx:id="cmbRol" prefHeight="35.0" prefWidth="110.0" promptText="Admin" styleClass="combo-formulario">
+                                 <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                       <String fx:value="Admin" />
+                                       <String fx:value="Invitado" />
+                                    </FXCollections>
+                                 </items>
+                              </ComboBox>
+                           </children>
+                        </HBox>
                      </children>
                      
                      <VBox.margin>
@@ -116,16 +129,14 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                      <VBox.margin>
-                        <Insets left="25.0" />
-                     </VBox.margin>
+                        <Insets left="0.0" /> </VBox.margin>
                   </Button>
                   <Button fx:id="btnRegresar" mnemonicParsing="false" onAction="#accionRegresar" prefHeight="25.0" prefWidth="120.0" styleClass="boton-salir" text="Regresar">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                      <VBox.margin>
-                        <Insets left="25.0" top="10.0" />
-                     </VBox.margin>
+                        <Insets left="0.0" top="10.0" /> </VBox.margin>
                   </Button>
                </children>
             </VBox>

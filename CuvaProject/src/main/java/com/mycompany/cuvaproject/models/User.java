@@ -30,7 +30,7 @@ public class User {
         this.post = post;
         this.range = range;
         
-        // Validamos todo al crear el objeto
+
         validated(); 
         System.out.println("Se creo el objeto usuario con exito.");
     }

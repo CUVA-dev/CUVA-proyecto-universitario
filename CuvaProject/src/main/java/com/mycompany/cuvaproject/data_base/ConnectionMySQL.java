@@ -22,7 +22,7 @@ public class ConnectionMySQL {
 
 
     // Puerto
-    public String port = "3306";
+    public String port = "3307";
 
     public String getport(){return port;}
 

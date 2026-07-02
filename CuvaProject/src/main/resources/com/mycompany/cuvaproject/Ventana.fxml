@@ -41,6 +41,12 @@
                         <Font name="Arial Bold" size="14.0" />
                      </font>
                   </Button>
+                  
+                  <Button fx:id="btnCrearUsuario" maxHeight="35.0" maxWidth="300.0" mnemonicParsing="false" onAction="#showCreateUser" prefHeight="35.0" prefWidth="237.0" style="-fx-background-color: linear-gradient(to bottom, #4169e1, #1e40af); -fx-background-radius: 6px; -fx-effect: dropshadow(two-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);" styleClass="boton-menu" text="CREAR USUARIO">
+                     <font>
+                        <Font name="Arial Bold" size="14.0" />
+                     </font>
+                  </Button>
 
                   <Separator prefWidth="252.0" styleClass="separador-menu" />
 
