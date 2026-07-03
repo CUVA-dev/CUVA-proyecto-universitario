@@ -8,26 +8,32 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="650.0" prefWidth="850.0" styleClass="mainFxmlClass" stylesheets="@register.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.cuvaproject.controller.RegisterController">
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="850.0" styleClass="mainFxmlClass" stylesheets="@register.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.cuvaproject.controller.RegisterController">
    <children>
       <VBox alignment="CENTER" spacing="25.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="CENTER" fillWidth="false" spacing="20.0" styleClass="formulario-tarjeta">
+            <VBox alignment="CENTER" fillWidth="false" minHeight="100.0" minWidth="100.0" spacing="20.0" styleClass="formulario-tarjeta">
                <padding>
                   <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
                </padding>
                <children>
+                  <Label text="Crear usuario">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
                   
-                  <GridPane hgap="10.0" vgap="12.0">
+                  <GridPane hgap="10.0" vgap="15.0">
                      <children>
+                        <!-- CÉDULA -->
                         <Label cache="true" prefHeight="20.0" prefWidth="54.0" styleClass="label-formulario" text="Cédula:" GridPane.columnIndex="0" GridPane.rowIndex="0">
                            <font>
                               <Font name="System Bold" size="14.0" />
@@ -36,64 +42,99 @@
                               <Insets left="10.0" />
                            </GridPane.margin>
                         </Label>
-                        <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
                            <children>
-                              <ComboBox fx:id="cmbNacionalidad" maxWidth="65.0" prefHeight="35.0" prefWidth="65.0" promptText="V" styleClass="combo-formulario">
-                                 <items>
-                                    <FXCollections fx:factory="observableArrayList">
-                                       <String fx:value="V" />
-                                       <String fx:value="E" />
-                                    </FXCollections>
-                                 </items>
-                              </ComboBox>
-                              <TextField fx:id="id" prefWidth="160.0" styleClass="input-formulario" HBox.hgrow="ALWAYS" />
+                              <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                 <children>
+                                    <ComboBox fx:id="cmbNacionalidad" maxWidth="65.0" prefHeight="35.0" prefWidth="65.0" promptText="V" styleClass="combo-formulario">
+                                       <items>
+                                          <FXCollections fx:factory="observableArrayList">
+                                             <String fx:value="V" />
+                                             <String fx:value="E" />
+                                          </FXCollections>
+                                       </items>
+                                    </ComboBox>
+                                    <TextField fx:id="id" prefWidth="130.0" styleClass="input-formulario" />
+                                 </children>
+                              </HBox>
+                              <Label fx:id="lblErrorId" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
                            </children>
-                        </HBox>
+                        </VBox>
                         
+                        <!-- NOMBRE -->
                         <Label cache="true" styleClass="label-formulario" text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="1">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="name" prefWidth="170.0" styleClass="input-formulario" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <children>
+                              <TextField fx:id="name" maxWidth="230.0" prefWidth="100.0" styleClass="input-formulario" />
+                              <Label fx:id="lblErrorName" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                           </children>
+                        </VBox>
                         
+                        <!-- APELLIDO -->
                         <Label cache="true" mnemonicParsing="true" styleClass="label-formulario" text="Apellido:" GridPane.columnIndex="0" GridPane.rowIndex="2">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="lastname" prefWidth="170.0" styleClass="input-formulario" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <children>
+                              <TextField fx:id="lastname" maxWidth="230.0" prefWidth="150.0" styleClass="input-formulario" />
+                              <Label fx:id="lblErrorLastName" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                           </children>
+                        </VBox>
                         
+                        <!-- CONTRASEÑA -->
                         <Label cache="true" styleClass="label-formulario" text="Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="3">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <PasswordField fx:id="password" maxWidth="150.0" prefHeight="25.0" prefWidth="224.0" styleClass="input-formulario" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <children>
+                              <PasswordField fx:id="password" maxHeight="120.0" maxWidth="180.0" prefHeight="35.0" prefWidth="135.0" styleClass="input-formulario" />
+                              <Label fx:id="lblErrorPassword" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                           </children>
+                        </VBox>
                         
+                        <!-- CONFIRMAR CONTRASEÑA -->
                         <Label cache="true" styleClass="label-formulario" text="Confirmar:" GridPane.columnIndex="0" GridPane.rowIndex="4">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <PasswordField fx:id="password_two" maxWidth="150.0" prefWidth="170.0" styleClass="input-formulario" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <children>
+                              <PasswordField fx:id="password_two" maxWidth="180.0" prefHeight="35.0" prefWidth="135.0" styleClass="input-formulario" />
+                              <Label fx:id="lblErrorPasswordTwo" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                           </children>
+                        </VBox>
                         
+                        <!-- CORREO -->
                         <Label cache="true" styleClass="label-formulario" text="Correo:" GridPane.columnIndex="0" GridPane.rowIndex="5">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="email" maxHeight="100.0" maxWidth="200.0" prefWidth="170.0" styleClass="input-formulario" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                           <children>
+                              <TextField fx:id="email" prefWidth="260.0" styleClass="input-formulario" />
+                              <Label fx:id="lblErrorEmail" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                           </children>
+                        </VBox>
                         
+                        <!-- CARGO / ROL -->
                         <Label cache="true" styleClass="label-formulario" text="Cargo:" GridPane.columnIndex="0" GridPane.rowIndex="6">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        
                         <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <children>
-                              <TextField fx:id="post" maxHeight="50.0" maxWidth="120.0" styleClass="input-formulario" />
+                              <TextField fx:id="post" maxHeight="35.0" maxWidth="120.0" prefWidth="120.0" styleClass="input-formulario" />
                               <ComboBox fx:id="cmbRol" prefHeight="35.0" prefWidth="110.0" promptText="Admin" styleClass="combo-formulario">
                                  <items>
                                     <FXCollections fx:factory="observableArrayList">
@@ -105,7 +146,6 @@
                            </children>
                         </HBox>
                      </children>
-                     
                      <VBox.margin>
                         <Insets bottom="11.0" top="20.0" />
                      </VBox.margin>
@@ -124,19 +164,10 @@
                      </rowConstraints>
                   </GridPane>
                   
-                  <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#handleUser" prefHeight="25.0" prefWidth="120.0" styleClass="boton-registrar" text="Registrar" textAlignment="CENTER">
+                  <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#handleUser" prefHeight="25.0" prefWidth="120.0" styleClass="boton-registrar" text="Crear" textAlignment="CENTER">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
-                     <VBox.margin>
-                        <Insets left="0.0" /> </VBox.margin>
-                  </Button>
-                  <Button fx:id="btnRegresar" mnemonicParsing="false" onAction="#accionRegresar" prefHeight="25.0" prefWidth="120.0" styleClass="boton-salir" text="Regresar">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="0.0" top="10.0" /> </VBox.margin>
                   </Button>
                </children>
             </VBox>
