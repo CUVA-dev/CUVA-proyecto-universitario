@@ -12,8 +12,6 @@ import com.mycompany.cuvaproject.models.Subject;
 import com.mycompany.cuvaproject.models.Reprobated;
 
 public class Data_Manipulator {
-    public static ArrayList<String> bitacora = new ArrayList<>();
-    
     // Métodos de la tabla bitacora
     
     public void InsertTableBitacora(ConnectionMySQL CMySQL,String idValue,String action){
@@ -31,7 +29,10 @@ public class Data_Manipulator {
         }
     }
 
-    String sql = "select bita.time,u.name,u.lastname,bita.action from bitacora bita inner join user u on bita.IDUser = u.ID";
+        public ArrayList<String> ExtractTableBitacora(ConnectionMySQL CMySQL){
+        ArrayList<String> bitacora = new ArrayList<>();
+
+        String sql = "select bita.time,u.name,u.lastname,bita.action from bitacora bita inner join user u on bita.IDUser = u.ID";
         try (Connection conn = CMySQL.conectarMySQL()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
@@ -46,17 +47,14 @@ public class Data_Manipulator {
                 String b = "time: " + time + " --- action: " + action + " --- Name: " + name + " --- Lastname: " + lastname;
                 bitacora.add(b);
             };
-    
-            System.out.println("se saco de la bitacora");
-            for (String entry : bitacora) {
-                System.out.println(entry);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-    
-        }
-    
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    System.out.println("se saco de la bitacora");
+    return bitacora;
+    }
+
+    
     // Metodos de la tabla user
 
     public void InsertTableUser(ConnectionMySQL CMySQL,User user){
