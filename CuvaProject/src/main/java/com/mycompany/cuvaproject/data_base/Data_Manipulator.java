@@ -47,10 +47,11 @@ public class Data_Manipulator {
                 String b = "time: " + time + " --- action: " + action + " --- Name: " + name + " --- Lastname: " + lastname;
                 bitacora.add(b);
             };
+            System.out.println("se saco de la bitacora");
     } catch (SQLException e) {
         e.printStackTrace();
     }
-    System.out.println("se saco de la bitacora");
+
     return bitacora;
     }
 
