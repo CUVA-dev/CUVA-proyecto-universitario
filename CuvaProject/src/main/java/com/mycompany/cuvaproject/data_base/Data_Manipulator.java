@@ -32,7 +32,7 @@ public class Data_Manipulator {
         public ArrayList<String> ExtractTableBitacora(ConnectionMySQL CMySQL){
         ArrayList<String> bitacora = new ArrayList<>();
 
-        String sql = "select bita.time,u.name,u.lastname,bita.action from bitacora bita inner join user u on bita.IDUser = u.ID";
+        String sql = "select bita.time,u.name,u.lastname,bita.action from bitacora bita inner join user u on bita.IDUser = u.ID  order by bita.time desc";
         try (Connection conn = CMySQL.conectarMySQL()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
