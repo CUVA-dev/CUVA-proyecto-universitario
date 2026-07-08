@@ -9,10 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import com.mycompany.cuvaproject.models.Student;
+
 
 public class ProcesadorRecord {
 
@@ -43,6 +46,7 @@ public class ProcesadorRecord {
         String career = "No encontrado";
         String tuition = "No encontrado";
         int idInt = 0;
+        int UC=0;
 
         Matcher mApell = Pattern.compile("Apellidos:\\s*(.*?)\\s*(?=Nombres|Matr[ií]cula|Documento|Carrera|Per[ií]odo|P[áa]gina|Identidad|V-|$)", Pattern.CASE_INSENSITIVE).matcher(textoNorm);
         if (mApell.find()) lastName = mApell.group(1).trim();
@@ -60,8 +64,19 @@ public class ProcesadorRecord {
 
         Matcher mMat = Pattern.compile("Matr[ií\\S]cula:\\s*([0-9-]+)", Pattern.CASE_INSENSITIVE).matcher(textoNorm);
         if (mMat.find()) tuition = mMat.group(1).trim();
+        
+        Matcher mCred = Pattern.compile("(?:Unidades\\s+de\\s+Cr[eé]dito|U\\.?C\\.?)[^0-9]*(\\d{2,3})", Pattern.CASE_INSENSITIVE).matcher(textoNorm);
+        while (mCred.find()) {
+            try {
+                int tempCred = Integer.parseInt(mCred.group(1));
+                // Nos quedamos con el valor más alto en caso de que el PDF tenga subtotales por semestre
+                if (tempCred > UC) {
+                    UC = tempCred; 
+                }
+            } catch (Exception e) {}
+        }
 
-        return new Student(name, lastName, career, idInt, tuition);
+        return new Student(name, lastName, career, idInt, tuition, UC);
     }
 
     /**
@@ -106,29 +121,31 @@ public class ProcesadorRecord {
         System.out.println("====================================================================");
     }
 
-    /**
-     * Analiza el historial académico extrayendo exclusivamente las materias reprobadas.
+  /**
+     * Analiza el historial académico, filtra años, extrae materias reprobadas
+     * y evalúa las condiciones de auditoría para determinar el tipo de reporte.
      */
     public List<Reprobated> extraerMateriasReprobadas(String textoBruto, int idInt) {
         List<Reprobated> listaReprobadas = new ArrayList<>();
         String textoNorm = textoBruto.replaceAll("\\s+", " ");
-        
-        // Dividimos el contenido lineal usando los identificadores de periodos como bandera de inicio de fila
+
+        // --- NUEVOS CONTADORES (Diccionarios) ---
+        Map<String, Integer> inscritasPorPeriodo = new HashMap<>();
+        Map<String, Integer> reprobadasPorPeriodo = new HashMap<>();
+        Map<String, Integer> repeticionesMateria = new HashMap<>();
+        // ----------------------------------------
+
         String[] bloques = textoNorm.split("(?=\\b\\d[A-Z]*-\\d{4}\\b)");
 
         for (String bloque : bloques) {
-            /* * MODIFICACIÓN DE SEGURIDAD REFORZADA:
-             * Agregamos límites estrictos de palabra (\\b) para evitar que subcadenas 
-             * dentro de descriptores de periodo intensivo (como 1PIV-2023) muten en códigos.
-             */
             Pattern patronCodigo = Pattern.compile("\\b([A-Z]{3,4}-?\\d{4,5})\\b");
             Matcher m = patronCodigo.matcher(bloque);
 
             if (m.find()) {
                 String code = m.group(1);
 
-                // ESCUDO TOTAL CONTRA PERÍODOS INTRUSOS: Si el código es en realidad un año de periodo, lo saltamos
-                if (code.contains("2022") || code.contains("2023") || code.contains("2024") || code.contains("2025") || code.contains("2026")) {
+                // ESCUDO ROBUSTO (Dinámico para cualquier año 20XX)
+                if (code.matches(".*20\\d{2}.*")) {
                     continue; 
                 }
 
@@ -141,6 +158,9 @@ public class ProcesadorRecord {
                     period = mPeriodo.group();
                 }
 
+                // === REGISTRAMOS LA MATERIA INSCRITA ===
+                inscritasPorPeriodo.put(period, inscritasPorPeriodo.getOrDefault(period, 0) + 1);
+
                 // Capturamos el SEMESTRE
                 String semester = "00";
                 Matcher mSem = Pattern.compile("\\b(0[1-9]|1[0-2])\\b").matcher(resto);
@@ -148,18 +168,13 @@ public class ProcesadorRecord {
                     semester = mSem.group(1);
                 }
 
-                // Pelamos la cebolla: removemos metadatos estructurales de la cadena de análisis
+                // Limpieza de metadatos
                 resto = resto.replace(code, "");
                 resto = resto.replaceFirst("\\b\\d[A-Z]*-\\d{4}\\b", "");
                 resto = resto.replaceFirst("\\b(0[1-9]|1[0-2])\\b", "");
 
-                // Evaluamos si el bloque contiene texto explícito de aplazamiento antes de limpiar la cadena
                 boolean reproboPorTexto = resto.toUpperCase().matches(".*(REPROB[OÓ\\S]*|INASISTENCIA).*");
 
-                /* * CORRECCIÓN PARA FILTRADO DE NOMBRE:
-                 * Si el bloque contiene palabras de estado académico (REPROBÓ, APROBÓ, etc.), 
-                 * cortamos la cadena allí para impedir fugas extrañas ("POR DE", "% DE") en el nombre.
-                 */
                 String restoUpper = resto.toUpperCase();
                 int idxCorte = Integer.MAX_VALUE;
                 String[] keywordsCorte = {"REPROB", "APROB", "INASISTENCIA", "ÍNDICE", "INDICE", "PÁGINA", "PAGINA", "MATRICULA"};
@@ -173,54 +188,131 @@ public class ProcesadorRecord {
                     resto = resto.substring(0, idxCorte);
                 }
 
-                // Rescatamos los dígitos restantes (calificación numérica real de la fila)
                 Matcher mNum = Pattern.compile("\\b(\\d+)\\b").matcher(resto);
                 List<Integer> numeros = new ArrayList<>();
                 while (mNum.find()) {
                     numeros.add(Integer.parseInt(mNum.group(1)));
                 }
 
-                // Removemos los números remanentes para aislar únicamente el nombre de la asignatura
                 resto = resto.replaceAll("\\b(\\d+)\\b", "");
                 String nameSubject = resto.replaceAll("[^a-zA-ZÑÁÉÍÓÚñáéíóúIIVX1-9 ]", "").replaceAll("\\s+", " ").trim();
                 if (nameSubject.isEmpty()) nameSubject = "Materia Desconocida";
 
-                // Evaluamos el primer número capturado como la nota definitiva
                 int calificacion = -1;
                 if (!numeros.isEmpty()) {
                     calificacion = numeros.get(0); 
                 }
 
-                // Evaluación unificada de reprobación académica (Nota menor a 10 o Sanción por inasistencia)
                 boolean esReprobada = (calificacion >= 0 && calificacion < 10) || reproboPorTexto;
-                
+
                 if (esReprobada) {
+                    // === REGISTRAMOS LA MATERIA REPROBADA ===
+                    reprobadasPorPeriodo.put(period, reprobadasPorPeriodo.getOrDefault(period, 0) + 1);
+                    repeticionesMateria.put(nameSubject, repeticionesMateria.getOrDefault(nameSubject, 0) + 1);
+
                     String notaFinal;
-                    String observacion;
-                    
                     if (calificacion >= 0 && calificacion < 10) {
                         notaFinal = String.format("%02d", calificacion);
-                        observacion = "APLAZADO";
                     } else {
                         notaFinal = "REPROBÓ";
-                        observacion = "Por Texto/Inasistencia";
                     }
-                    
-                    // Instanciamos el objeto con la firma del modelo
-                 
-                    Reprobated materiaAplazada = new Reprobated(null,nameSubject, String.valueOf(idInt), code, period, notaFinal);
-                    listaReprobadas.add(materiaAplazada);
 
-                    //impresión en terminal para comprobar que los datos se extrajeron bien
+                    Reprobated materiaAplazada = new Reprobated(null, nameSubject, String.valueOf(idInt), code, period, notaFinal);
+                    listaReprobadas.add(materiaAplazada);
                     System.out.println("  -> CI: " + idInt + " [" + period + "] " + code + " | Nota: " + notaFinal);
                 }
             }
         }
+
+        // === EVALUACIÓN FINAL DE CONDICIONES (Auditoría) ===
+        System.out.println("\n[EVALUACIÓN DE CONDICIONES DE AUDITORÍA]");
+        
+        boolean alertaMitad = false;
+        for (String per : inscritasPorPeriodo.keySet()) {
+            int inscritas = inscritasPorPeriodo.get(per);
+            int reprobadas = reprobadasPorPeriodo.getOrDefault(per, 0);
+            
+            if (reprobadas > (inscritas / 2.0)) {
+                alertaMitad = true;
+                System.out.println("  ! CONDICIÓN 1 CUMPLIDA: En el periodo [" + per + "] reprobó " + reprobadas + " de " + inscritas + " materias.");
+            }
+        }
+
+        boolean alertaTresVeces = false;
+        for (String mat : repeticionesMateria.keySet()) {
+            int veces = repeticionesMateria.get(mat);
+            if (veces >= 3) {
+                alertaTresVeces = true;
+                System.out.println("  ! CONDICIÓN 2 CUMPLIDA: Reprobó la materia [" + mat + "] " + veces + " veces.");
+            }
+        }
+
+        // Determinar resultado final
+        if (alertaMitad && alertaTresVeces) {
+            System.out.println("  >>> RESULTADO: CASO CRÍTICO (Generar Plantilla 3)");
+        } else if (alertaTresVeces) {
+            System.out.println("  >>> RESULTADO: SUSPENSIÓN TERCERA VEZ (Generar Plantilla 2)");
+        } else if (alertaMitad) {
+            System.out.println("  >>> RESULTADO: BAJO RENDIMIENTO (Generar Plantilla 1)");
+        } else {
+            System.out.println("  >>> RESULTADO: REGULAR (No se requiere reporte)");
+        }
+
         return listaReprobadas;
-        
-        
     }
 
+
+    // LÓGICA DE AUDITORÍA (REGLAMENTO UNEFA)
+    /**
+     * CONDICIÓN 1: Evalúa si reprobó más del 50% en un mismo periodo
+     */
+    private boolean aplazoMasDeLaMitad(List<Reprobated> reprobadas, String textoBruto) {
+        java.util.Set<String> periodosReprobados = new java.util.HashSet<>();
+        for (Reprobated r : reprobadas) {
+            periodosReprobados.add(r.getPeriod()); 
+        }
+
+        String[] bloques = textoBruto.replaceAll("\\s+", " ").split("(?=\\b\\d[A-Z]*-\\d{4}\\b)");
+
+        for (String periodo : periodosReprobados) {
+            int totalInscritasEnPeriodo = 0;
+            int totalReprobadasEnPeriodo = 0;
+
+            for (String bloque : bloques) {
+                if (bloque.trim().startsWith(periodo)) {
+                    if (Pattern.compile("\\b([A-Z]{3,4}-?\\d{4,5})\\b").matcher(bloque).find()) {
+                        totalInscritasEnPeriodo++;
+                    }
+                }
+            }
+
+            for (Reprobated r : reprobadas) {
+                if (r.getPeriod().equals(periodo)) totalReprobadasEnPeriodo++;
+            }
+
+            if (totalInscritasEnPeriodo > 0 && totalReprobadasEnPeriodo > (totalInscritasEnPeriodo / 2.0)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * CONDICIÓN 2: Evalúa si reprobó la misma materia 3 veces
+     */
+    private boolean tieneTripleteReprobado(List<Reprobated> reprobadas) {
+        java.util.Map<String, Integer> conteo = new java.util.HashMap<>();
+        for (Reprobated r : reprobadas) {
+            String codigo = r.getCodeSubject();
+            conteo.put(codigo, conteo.getOrDefault(codigo, 0) + 1);
+            if (conteo.get(codigo) >= 3) return true;
+        }
+        return false;
+    }
+
+    // 
+    // FLUJO CENTRAL AUTOMATIZADO - CONEXIÓN
+    // 
     public void resultado(String rutaArchivo) {
         System.out.println(" Iniciando flujo automatizado para: " + rutaArchivo);
         
@@ -229,9 +321,45 @@ public class ProcesadorRecord {
             System.err.println(" El texto extraído está vacío. Abortando análisis.");
             return;
         }
+        
+        // 1. Extracción de Modelos
         Student estudianteDetectado = extraerEstudiante(textoBrutoReal);       
         procesarYMostrarModelos(textoBrutoReal, estudianteDetectado);
         
+        // Obtenemos la lista que genero tu método modificar.
+        List<Reprobated> reprobadas = extraerMateriasReprobadas(textoBrutoReal, estudianteDetectado.getID());
+
+        // --- 2. AUDITORÍA INTELIGENTE: EVALUAR CASOS ---
+        boolean casoMitad = aplazoMasDeLaMitad(reprobadas, textoBrutoReal);
+        boolean casoTriplete = tieneTripleteReprobado(reprobadas);
+        String mensajeDictamen = "";
+        
+        if (casoMitad && casoTriplete) {
+            // CASO 3: Cumple ambas
+            System.out.println("[ALERTA] Incurre en doble falta (Mitad + Triplete).");
+            mensajeDictamen = "Debido al incumplimiento del reglamento interno de la Universidad Nacional Experimental de la Fuerza Armada, se aplicará una suspensión inmediata de un (1) período académico al estudiante por incurrir en doble falta reglamentaria: haber reprobado más del cincuenta por ciento (50%) de la carga académica de un mismo período y reprobar una misma unidad curricular en tres (3) oportunidades.";
+        } 
+        else if (casoTriplete) {
+            // CASO 2: Solo triplete
+            System.out.println("[ALERTA] Incurre en falta por triple reprobación.");
+            mensajeDictamen = "Debido al incumplimiento del reglamento interno de la Universidad Nacional Experimental de la Fuerza Armada, se aplicará una suspensión de un (1) período académico al estudiante por haber reprobado una misma unidad curricular en tres (3) oportunidades en su récord académico.";
+        } 
+        else if (casoMitad) {
+            // CASO 1: Solo mitad reprobada
+            System.out.println("[ALERTA] Incurre en falta por >50% carga reprobada.");
+            mensajeDictamen = "Debido al incumplimiento del reglamento interno de la Universidad Nacional Experimental de la Fuerza Armada, se aplicará una suspensión de un (1) período académico al estudiante por haber reprobado más del cincuenta por ciento (50%) de la carga académica correspondiente a un mismo período.";
+        }
+
+        // 3. GENERAR EL PDF (Solo si aplica sanción)
+        if (!mensajeDictamen.isEmpty()) {
+            // Define el nombre del archivo de salida. Puedes guardarlo en una carpeta específica si quieres.
+            String rutaSalidaPDF = "Reporte_Auditoria_" + estudianteDetectado.getID() + ".pdf";
+            
+            System.out.println("[CUVA] Generando Reporte de Auditoría PDF...");
+            // Llamamos a la clase creada en el PASO 1
+            GenerarReporte.generarPDF(estudianteDetectado, reprobadas, mensajeDictamen, rutaSalidaPDF);
+        } else {
+            System.out.println("[CUVA] Auditoría limpia. El estudiante no cumple condiciones de sanción.");
+        }
     }
-    
 }
