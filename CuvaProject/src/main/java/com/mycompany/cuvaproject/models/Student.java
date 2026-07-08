@@ -14,8 +14,9 @@ import com.mycompany.cuvaproject.data_base.ConnectionMySQL;
         private String Career;
         private int ID;
         private String Tuition;
+        private int UC;
 
-        public Student(String name, String lastName, String Career, int ID, String Tuition) {
+        public Student(String name, String lastName, String Career, int ID, String Tuition, int UC) {
             this.name = name;
             this.lastName = lastName;
             this.Career = Career;
