@@ -12,12 +12,6 @@ import com.mycompany.cuvaproject.models.Subject;
 import com.mycompany.cuvaproject.models.Reprobated;
 
 public class Data_Manipulator {
-
-    
-    public static ArrayList<Timestamp> Atime = new ArrayList<>();
-    public static ArrayList<String> Aaction = new ArrayList<>();
-
-    
     // Métodos de la tabla bitacora
     
     public void InsertTableBitacora(ConnectionMySQL CMySQL,String idValue,String action){
@@ -35,35 +29,33 @@ public class Data_Manipulator {
         }
     }
 
-    public void ExtractTableBitacora(ConnectionMySQL CMySQL,String IDvalue){
+        public ArrayList<String> ExtractTableBitacora(ConnectionMySQL CMySQL){
+        ArrayList<String> bitacora = new ArrayList<>();
 
-        String sql = "select * from Bitacora where IDUser = '"+IDvalue+"'";
+        String sql = "select bita.time,u.name,u.lastname,bita.action from bitacora bita inner join user u on bita.IDUser = u.ID  order by bita.time desc";
         try (Connection conn = CMySQL.conectarMySQL()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
     
             while (rs.next()) {
     
-                Timestamp login = rs.getTimestamp("time");
+                Timestamp time = rs.getTimestamp("time");
                 String action = rs.getString("action");
-                Atime.add(login);
-                Aaction.add(action);
-            };    
-              for (Timestamp time : Atime) {
-                System.out.println(time);
-              }
-              for (String action : Aaction) {
-                System.out.println(action);
-              }
-    
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-    
-        }
-    
+                String name = rs.getString("name");
+                String lastname = rs.getString("lastname");
+
+                String b = "time: " + time + " --- action: " + action + " --- Name: " + name + " --- Lastname: " + lastname;
+                bitacora.add(b);
+            };
+            System.out.println("se saco de la bitacora");
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
 
+    return bitacora;
+    }
+
+    
     // Metodos de la tabla user
 
     public void InsertTableUser(ConnectionMySQL CMySQL,User user){
