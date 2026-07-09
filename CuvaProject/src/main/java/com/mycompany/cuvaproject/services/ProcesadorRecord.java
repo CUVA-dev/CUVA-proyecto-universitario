@@ -1,5 +1,3 @@
-
- 
 package com.mycompany.cuvaproject.services;
 
 import com.mycompany.cuvaproject.models.Reprobated;
@@ -14,8 +12,6 @@ import java.util.Map;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-import com.mycompany.cuvaproject.models.Student;
-
 
 public class ProcesadorRecord {
 
@@ -311,9 +307,9 @@ public class ProcesadorRecord {
     }
 
     // 
-    // FLUJO CENTRAL AUTOMATIZADO - CONEXIÓN
+    // FLUJO CENTRAL AUTOMATIZADO - CONEXIÓN CON CARPETA DESTINO
     // 
-    public void resultado(String rutaArchivo) {
+    public void resultado(String rutaArchivo, String carpetaDestino) {
         System.out.println(" Iniciando flujo automatizado para: " + rutaArchivo);
         
         String textoBrutoReal = obtenerTextoBruto(rutaArchivo);
@@ -342,7 +338,7 @@ public class ProcesadorRecord {
         else if (casoTriplete) {
             // CASO 2: Solo triplete
             System.out.println("[ALERTA] Incurre en falta por triple reprobación.");
-            mensajeDictamen = "Debido al incumplimiento del reglamento interno de la Universidad Nacional Experimental de la Fuerza Armada, se aplicará una suspensión de un (1) período académico al estudiante por haber reprobado una misma unidad curricular en tres (3) oportunidades en su récord académico.";
+            mensajeDictamen = "Debido al incumplimiento del reglamento interno de la Universidad Nacional Experimental de la Fuerza Armada, se aplicará una suspensión de un (1) período académico al estudiante por haber reprobado una misma unidad curricular en tres (3) oportunidades in su récord académico.";
         } 
         else if (casoMitad) {
             // CASO 1: Solo mitad reprobada
@@ -352,11 +348,11 @@ public class ProcesadorRecord {
 
         // 3. GENERAR EL PDF (Solo si aplica sanción)
         if (!mensajeDictamen.isEmpty()) {
-            // Define el nombre del archivo de salida. Puedes guardarlo en una carpeta específica si quieres.
-            String rutaSalidaPDF = "Reporte_Auditoria_" + estudianteDetectado.getID() + ".pdf";
+            // NUEVO: Concatenamos la ruta de descargas recibida por parámetro para guardar el archivo allí
+            String rutaSalidaPDF = carpetaDestino + "Reporte_Auditoria_" + estudianteDetectado.getID() + ".pdf";
             
-            System.out.println("[CUVA] Generando Reporte de Auditoría PDF...");
-            // Llamamos a la clase creada en el PASO 1
+            System.out.println("[CUVA] Generando Reporte de Auditoría PDF en: " + rutaSalidaPDF);
+            // Llamamos a la clase de reporte
             GenerarReporte.generarPDF(estudianteDetectado, reprobadas, mensajeDictamen, rutaSalidaPDF);
         } else {
             System.out.println("[CUVA] Auditoría limpia. El estudiante no cumple condiciones de sanción.");

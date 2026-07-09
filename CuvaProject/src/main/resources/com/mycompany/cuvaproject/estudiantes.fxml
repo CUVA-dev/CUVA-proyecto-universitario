@@ -14,15 +14,13 @@
     </stylesheets>
    <children>
       
-      <VBox spacing="15.0" styleClass="panel-instrucciones" 
-            AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" 
-            AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+      <VBox spacing="15.0" styleClass="panel-instrucciones" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
          <padding>
             <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
          </padding>
          
          <children>
-            <Label text="Instrucciones de Escaneo Técnico" styleClass="titulo-instrucciones">
+            <Label styleClass="titulo-instrucciones" text="Instrucciones de Escaneo Técnico">
                <font>
                   <Font name="Arial Bold" size="20.0" />
                </font>
@@ -30,26 +28,25 @@
             
             <VBox spacing="10.0" styleClass="cuerpo-instrucciones">
                <children>
-                  <Label text="1. Para iniciar el escaneo de un récord académico, presione el botón 'Escanear' ubicado a continuación." 
-                         wrapText="true" styleClass="texto-paso" />
+                  <Label styleClass="texto-paso" text="1. Para iniciar el escaneo de un récord académico, presione el botón 'Escanear' ubicado a continuación." wrapText="true" />
                   
-                  <Label text="2. Explore el directorio local, seleccione los archivos correspondientes a los expedientes estudiantiles y confirme la acción pulsando 'Aceptar'." 
-                         wrapText="true" styleClass="texto-paso" />
+                  <Label styleClass="texto-paso" text="2. Explore el directorio local, seleccione los archivos correspondientes a los expedientes estudiantiles y confirme la acción pulsando 'Aceptar'." wrapText="true" />
                   
-                  <Label text="3. El sistema procesará digitalmente el récord académico. En función del rendimiento y las calificaciones detectadas, se generará de forma automática un informe institucional fundamentado estrictamente en los protocolos establecidos 01, 02 y 03." 
-                         wrapText="true" styleClass="texto-paso" />
+                  <Label styleClass="texto-paso" text="3. El sistema procesará digitalmente el récord académico. En función del rendimiento y las calificaciones detectadas, se generará de forma automática un informe institucional fundamentado estrictamente en los protocolos establecidos 01, 02 y 03." wrapText="true" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" top="5.0" />
                </VBox.margin>
             </VBox>
             
-            <Button fx:id="btnEscanear" mnemonicParsing="false" onAction="#actionScann" 
-                    prefHeight="35.0" prefWidth="150.0" styleClass="boton-escanear" text="Escanear">
+            <Button fx:id="btnEscanear" mnemonicParsing="false" onAction="#actionScann" prefHeight="35.0" prefWidth="150.0" styleClass="boton-escanear" text="Escanear">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Button>
+            <Label fx:id="lblSuccess" text="" textFill="GREEN" visible="false" wrapText="true">
+                <font><Font name="Arial Rounded MT Bold" size="18.0" /></font>
+            </Label>
          </children>
       </VBox>
       

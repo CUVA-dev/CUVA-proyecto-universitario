@@ -44,7 +44,7 @@ public class RegisterController implements Initializable {
     @FXML private Label lblErrorPasswordTwo;
     @FXML private Label lblErrorEmail;
     
-    // Label para el aviso de éxito (controlado por código)
+    
     private Label lblSuccess;
     
     @Override
