@@ -19,3 +19,8 @@ public class BitacoraController implements Initializable {
     }    
     
 }
+
+
+for (String entry : ObjDataM.ExtractTableBitacora(ObjCMySQL)) {
+            System.out.println(entry);
+        }
