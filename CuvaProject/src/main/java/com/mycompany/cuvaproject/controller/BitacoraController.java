@@ -1,6 +1,9 @@
 
 package com.mycompany.cuvaproject.controller;
 
+import com.mycompany.cuvaproject.data_base.ConnectionMySQL;
+import com.mycompany.cuvaproject.data_base.Data_Manipulator;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
@@ -11,6 +14,8 @@ import javafx.fxml.Initializable;
  * @author Usuario
  */
 public class BitacoraController implements Initializable {
+    ConnectionMySQL CMySQL = new ConnectionMySQL();
+    Data_Manipulator ObjDataM = new Data_Manipulator();
 
 
     @Override
