@@ -20,12 +20,12 @@ public class BitacoraController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        for (String entry : ObjDataM.ExtractTableBitacora(CMySQL)) {
+            System.out.println(entry);
+        }
     }    
     
 }
 
 
-for (String entry : ObjDataM.ExtractTableBitacora(ObjCMySQL)) {
-            System.out.println(entry);
-        }
+
