@@ -120,7 +120,7 @@ public class Data_Manipulator extends ConnectionMySQL{
 
     // Metodos de la tabla Student
 
-    public void InsertTableStudent(Student stu,String idValue){
+    public void InsertTableStudent(Student stu){
 
         String sql = "insert into Student (ID,Name,LastName,Career,Tuition) values (?,?,?,?,?)";
 
@@ -137,7 +137,7 @@ public class Data_Manipulator extends ConnectionMySQL{
              int filasActualizadas = pstmt.executeUpdate();
 
             if (filasActualizadas > 0) {
-                InsertTableBitacora(idValue,"Insertó un nuevo estudiante");
+                InsertTableBitacora(getIDvalue(),"Insertó un nuevo estudiante");
             }
         } catch (SQLException e) {
             e.printStackTrace();
