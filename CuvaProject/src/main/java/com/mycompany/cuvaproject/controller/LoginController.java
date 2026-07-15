@@ -47,7 +47,7 @@ public class LoginController implements Initializable {
         if (idValue.isEmpty() || passwordValue.isEmpty()) {
             throw new IllegalArgumentException("los campos no pueden estar vacios");
         }
-        if(ObjDataM.ValidationLogin(idValue, passwordValue,ObjDataM).equalsIgnoreCase("true")){accionBoton();}
+        if(ObjDataM.ValidationLogin(idValue, passwordValue).equalsIgnoreCase("true")){accionBoton();}
     }
     
     @FXML
