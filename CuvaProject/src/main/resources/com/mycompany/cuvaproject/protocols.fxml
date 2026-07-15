@@ -1,14 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.cuvaproject.controller.ProtocolsController">
+<AnchorPane id="AnchorPane" prefHeight="450.0" prefWidth="650.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.cuvaproject.controller.ProtocolsController">
     <stylesheets>
-        <URL value="@protocols.css"/>
+        <URL value="@protocols.css" />
     </stylesheets>
+   <children>
+      
+      <VBox layoutX="30.0" layoutY="30.0" spacing="15.0" styleClass="panel-instrucciones" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+         <padding>
+            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+         </padding>
+         
+         <children>
+            <Label styleClass="titulo-instrucciones" text="Protocolo Académico N° 114">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font>
+            </Label>
+            
+            <VBox spacing="10.0" styleClass="cuerpo-instrucciones">
+               <children>
+                  <Label styleClass="texto-paso" text="Los reportes generados por la aplicación se basarán estrictamente en el récord académico de los estudiantes." textFill="#e3bb00" wrapText="true" />
+                  
+                  <Label styleClass="texto-paso" text="De acuerdo al Protocolo Institucional N° 114, un estudiante será suspendido por un período académico cuando incurra en las siguientes causales académicas:" wrapText="true" />
+                  
+                  <Label styleClass="texto-causal" text="• Causal A: Repruebe tres (03) veces una misma asignatura." wrapText="true">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Label>
+                  
+                  <Label styleClass="texto-causal" text="• Causal B: Repruebe más del cincuenta por ciento (50%) de las asignaturas inscritas en un período académico." wrapText="true">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" top="5.0" />
+               </VBox.margin>
+            </VBox>
+         </children>
+      </VBox>
+      
+   </children>
 </AnchorPane>

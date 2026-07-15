@@ -35,7 +35,13 @@
                         <Font name="Arial Bold" size="14.0" />
                      </font>
                   </Button>
-
+                  
+                  <Button fx:id="btnProtocol" maxHeight="35.0" maxWidth="300.0" mnemonicParsing="false" onAction="#showProtocol" prefHeight="35.0" prefWidth="237.0" style="-fx-background-color: linear-gradient(to bottom, #4169e1, #1e40af); -fx-background-radius: 6px; -fx-effect: dropshadow(two-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);" styleClass="boton-menu" text="PROTOCOLO">
+                     <font>
+                        <Font name="Arial Bold" size="14.0" />
+                     </font>
+                  </Button>
+                  
                   <Button fx:id="btnBitacora" maxHeight="35.0" maxWidth="300.0" mnemonicParsing="false" onAction="#showBinnacle" prefHeight="35.0" prefWidth="237.0" style="-fx-background-color: linear-gradient(to bottom, #4169e1, #1e40af); -fx-background-radius: 6px; -fx-effect: dropshadow(two-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);" styleClass="boton-menu" text="BITÁCORA">
                      <font>
                         <Font name="Arial Bold" size="14.0" />
