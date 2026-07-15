@@ -6,355 +6,235 @@ import java.sql.ResultSet;
 import java.sql.SQLException; 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.security.SecureRandom;
 
 import com.mycompany.cuvaproject.models.User;
 import com.mycompany.cuvaproject.models.Student;
 import com.mycompany.cuvaproject.models.Subject;
 import com.mycompany.cuvaproject.models.Reprobated;
 
-public class Data_Manipulator {
+public class Data_Manipulator extends ConnectionMySQL{
+
+    private String IDvalue;
+    public void SetIDvalue(String IDvalue) {this.IDvalue = IDvalue;}
+    public String getIDvalue() {return IDvalue;}
     
-    public void InsertTableBitacora(ConnectionMySQL CMySQL,String idValue,String action){
+     // Métodos de la tabla bitacora
+    
+    public void InsertTableBitacora(String idValue,String action){
 
-        String sql = "Insert into bitacora (time,IDUser,action) values (current_timestamp,'"+idValue+"','"+action+"')";
+        String sql = "Insert into bitacora (FKIDUser,action) values (?,?)";
 
-        try (Connection conn = CMySQL.conectarMySQL()) {
+        try (Connection conn = conectarMySQL()) {
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, idValue);
+            pstmt.setString(2, action);
+
             
             pstmt.executeUpdate();
             System.out.println("se guardo en la bitacora");
+
         } catch (SQLException e) {
-            System.err.println("Error al insertar en la bitacora: " + e.getMessage());
+            System.out.println("no se guardo en la bitacora");
+            e.printStackTrace();
         }
     }
-
-    public ArrayList<String> ExtractTableBitacora(ConnectionMySQL CMySQL){
+    public ArrayList<String> ExtractTableBitacora(){
         ArrayList<String> bitacora = new ArrayList<>();
 
-        String sql = "select bita.time,u.name,u.lastname,bita.action from bitacora bita inner join user u on bita.IDUser = u.ID  order by bita.time desc";
-        try (Connection conn = CMySQL.conectarMySQL()){
+        String sql = "select bita.timee,u.name,u.lastname,bita.action from bitacora bita inner join user u on bita.FKIDUser = u.ID order by bita.timee desc";
+        try (Connection conn = conectarMySQL()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
     
             while (rs.next()) {
     
-                Timestamp time = rs.getTimestamp("time");
+                Timestamp timee = rs.getTimestamp("timee");
                 String action = rs.getString("action");
                 String name = rs.getString("name");
                 String lastname = rs.getString("lastname");
 
-                String b = "time: " + time + " --- action: " + action + " --- Name: " + name + " --- Lastname: " + lastname;
+                String b = "time: " + timee + " --- action: " + action + " --- Name: " + name + " --- Lastname: " + lastname;
                 bitacora.add(b);
             };
             System.out.println("se saco de la bitacora");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return bitacora;
+    } catch (SQLException e) {
+        System.out.println("no se saco de la bitacora");
+        e.printStackTrace();
+    }
+    return bitacora;
     }
 
-    public boolean InsertTableUser(ConnectionMySQL CMySQL,User user){
 
-        String sql = "INSERT INTO user (Name,LastName,ID,Email,Password,IDPost) VALUES ('"+user.getName()+"','"+user.getLastName()+"','"+user.getID()+"','"+user.getEmail()+"','"+user.getPassword()+"','"+user.getPost()+"')";
 
-        try (Connection conn = CMySQL.conectarMySQL()) {
+    // Metodos de la tabla user
+
+    public void InsertTableUser(User user){
+
+
+        SecureRandom sr = new SecureRandom();
+        byte[] salt = new byte[16]; // Tamaño estándar de 16 bytes
+        sr.nextBytes(salt);
+        String saltEncoded = Base64.getEncoder().encodeToString(salt);
+
+        // Consulta SQL en este caso Insertar
+        String sql ="INSERT INTO user (Name,LastName,ID,Email,Password,salt,FKIDPost,rangee) values (?,?,?, ?,SHA2(CONCAT(?, ?), 512),?,?,?)";
+
+        //conecta a la base de datos
+        try (Connection conn = conectarMySQL()) {
             
+            // prepara la consulta SQL
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            
-            int filasAfectadas = pstmt.executeUpdate();
-            if (filasAfectadas > 0) {
-                System.out.println("se guardo el usuario");
-                InsertTableBitacora(CMySQL,user.getID(),"Insertó un nuevo usuario");
-                return true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al insertar el usuario: " + e.getMessage());
-        }
-        return false;
-    }
-
-    public void DeleteInTableUser(ConnectionMySQL CMySQL,User user,String idValue){
-        String sql = "DELETE FROM user WHERE ID = '"+user.getID()+"'";
-        try (Connection conn = CMySQL.conectarMySQL()) {
-            
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-
-            int filasAfectadas = pstmt.executeUpdate();
-            
-            if (filasAfectadas > 0) {
-             InsertTableBitacora(CMySQL,idValue,"Eliminó un usuario");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar datos: " + e.getMessage());
-        }
-    }
-
-    public void modifyTableUser(ConnectionMySQL CMySQL,User user,String idValue){
-
-        String sql = "UPDATE User SET Name = '"+user.getName()+"',LastName = '"+user.getLastName()+"',Email = '"+user.getEmail()+"', Password = '"+user.getPassword()+"', Post = '"+user.getPost()+"' WHERE ID = '"+user.getID()+"'";
-
-        try (Connection conn = CMySQL.conectarMySQL()){
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-
-            int filasActualizadas = pstmt.executeUpdate();
-
-            if (filasActualizadas > 0) {
-                InsertTableBitacora(CMySQL,idValue,"Modificó un usuario");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al modificar los datos: " + e.getMessage());
-        }
-    }
-    
-    public void InsertTableSubject(ConnectionMySQL CMySQL,Subject sub){
-        String sql = "INSERT INTO Subject (Code,Semester,Unit_Credit,Name) VALUES ('"+sub.getCode()+"','"+sub.getSemester()+"','"+sub.getUnit_credit()+"','"+sub.getName()+"')";
         
-        try (Connection conn = CMySQL.conectarMySQL()) {
-            
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            
-            pstmt.executeUpdate();
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getLastName());
+            pstmt.setString(3, user.getID());
+            pstmt.setString(4, user.getEmail());
+            pstmt.setString(5, user.getPassword());
+            pstmt.setString(6, saltEncoded);
+            pstmt.setString(7, saltEncoded);
+            pstmt.setString(8, user.getPost());
+            pstmt.setString(9, user.getRange());
 
-        } catch (SQLException e) {
-            System.err.println("Error al insertar la materia: " + e.getMessage());
-        }
-
-    }
-
-    public void DeleteInTableSubject(ConnectionMySQL CMySQL,Subject sub,String idValue){
-
-        String sql = "DELETE FROM Subject WHERE code = '"+sub.getCode()+"'";
-
-        try (Connection conn = CMySQL.conectarMySQL()){
-            
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            
+            // el "pstmt" ejecutar la inserción
             int filasAfectadas = pstmt.executeUpdate();
-            
             if (filasAfectadas > 0) {
-                InsertTableBitacora(CMySQL,idValue,"Eliminó una materia");
+                System.out.println("se inserto un nuevo usuario");
+                InsertTableBitacora(getIDvalue(),"registro un nuevo usuario :"+user.getID());
             }
-
+            if(user.getRange().equalsIgnoreCase("invitado")){
+                sql = "insert into userduration(FKIDUser) values ('"+user.getID()+"')";
+                // pstmt.setString(2, user.getID());
+                pstmt = conn.prepareStatement(sql);
+                pstmt.executeUpdate();
+                System.out.println("se guardo el usuario temporal");
+            }
         } catch (SQLException e) {
-            System.err.println("Error al eliminar datos de la materia: " + e.getMessage());
+            System.out.println(e);
         }
+
     }
 
-    public void modifyTableSubject(ConnectionMySQL CMySQL,Subject sub,String idValue){
+    // Metodos de la tabla Student
 
-        String sql = "UPDATE Subject SET Code='"+sub.getCode()+"',Semester='"+sub.getSemester()+"',Unit_Credit='"+sub.getUnit_credit()+"',Name='"+sub.getName()+"'";
-        try (Connection conn = CMySQL.conectarMySQL()){
+    public void InsertTableStudent(Student stu,String idValue){
+
+        String sql = "insert into Student (ID,Name,LastName,Career,Tuition) values (?,?,?,?,?)";
+
+        try (Connection conn = conectarMySQL()){
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            int filasActualizadas = pstmt.executeUpdate();
-
-            if (filasActualizadas > 0) {
-                InsertTableBitacora(CMySQL,idValue,"Modificó una materia");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al modificar los datos de la materia: " + e.getMessage());
-        }
-    }
-
-    public void InsertTableStudent(ConnectionMySQL CMySQL,Student stu,String idValue){
-
-        String sql = "INSERT INTO Student (ID,Name,LastName,Career,Tuition) VALUES ('"+stu.getID()+"','"+stu.getName()+"','"+stu.getLastName()+"','"+stu.getCareer()+"','"+stu.getTuition()+"')";
-
-        try (Connection conn = CMySQL.conectarMySQL()){
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, stu.getID());
+            pstmt.setString(2, stu.getName());
+            pstmt.setString(3, stu.getLastName());
+            pstmt.setString(4, stu.getCareer());
+            pstmt.setString(5, stu.getTuition());
 
              int filasActualizadas = pstmt.executeUpdate();
 
             if (filasActualizadas > 0) {
-                InsertTableBitacora(CMySQL,idValue,"Insertó un nuevo estudiante");
+                InsertTableBitacora(idValue,"Insertó un nuevo estudiante");
             }
         } catch (SQLException e) {
-            System.err.println("Error al insertar el estudiante: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    public void DeleteInTableStudent(ConnectionMySQL CMySQL,Student stu,String idValue){
-
-        String sql = "DELETE FROM Student WHERE ID = '"+stu.getID()+"'";
-
-        try (Connection conn = CMySQL.conectarMySQL())
-         {
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            
-            int filasAfectadas = pstmt.executeUpdate();
-            
-            if (filasAfectadas > 0) {
-                InsertTableBitacora(CMySQL,idValue,"Eliminó un estudiante");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar datos del estudiante: " + e.getMessage());
-        }
-    }
-
-    public void modifyTableStudent(ConnectionMySQL CMySQL,Student stu,String idValue){
-
-        String sql = "UPDATE Student SET Name='"+stu.getName()+"',LastName='"+stu.getLastName()+"',Career='"+stu.getCareer()+"',Tuition='"+stu.getTuition()+"' WHERE ID = '"+stu.getID()+"'";
-        try (Connection conn = CMySQL.conectarMySQL()){
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-
-            int filasActualizadas = pstmt.executeUpdate();
-
-            if (filasActualizadas > 0) {
-                InsertTableBitacora(CMySQL,idValue,"Modificó un estudiante");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al modificar los datos del estudiante: " + e.getMessage());
-        }
-    }
+    // Metodos de la tabla Reprobated
     
-    public void InsertTableReprobated(ConnectionMySQL CMySQL,Reprobated rep){
+    // este metodo no guarda en la bitacora, ya que es automatio con el scanner de reprobados
+    public void InsertTableReprobated(Reprobated rep){
 
-        String sql = "INSERT INTO Reprobated (IDStudent,CodeSubject,grade,period) VALUES ('"+rep.getIDStudent()+"','"+rep.getCodeSubject()+"','"+rep.getGrade()+"','"+rep.getPeriod()+"')";
+        String sql = "insert into Reprobated (FKIDStudent,FKCodeSubject,grade,period) values (?,?,?,?)";
 
-        try (Connection conn = CMySQL.conectarMySQL()) {
+        try (Connection conn = conectarMySQL()) {
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            
+
+            pstmt.setString(1, rep.getIDStudent());
+            pstmt.setString(2, rep.getCodeSubject());
+            pstmt.setString(3, rep.getGrade());
+            pstmt.setString(4, rep.getPeriod());
+
             pstmt.executeUpdate();
+            System.out.println("se guardo el reprobado");
 
         } catch (SQLException e) {
-            System.err.println("Error al insertar el Reprovado: " + e.getMessage());
-        }
-    }
-    
-    public void DeleteInTableReprobated(ConnectionMySQL CMySQL,Reprobated Rep){
-
-        String sql = "DELETE FROM reprobated WHERE ID = '"+Rep.getIDStudent()+"'";
-
-        try (Connection conn = CMySQL.conectarMySQL()) {
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-
-            int filasAfectadas = pstmt.executeUpdate();
-            
-            if (filasAfectadas > 0) {
-                System.out.println("Registro eliminado exitosamente.");
-            } else {
-                System.out.println("No se encontró ningún registro con ese ID.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar datos del reprovado: " + e.getMessage());
+            System.out.println("no se guardo el reprobado");
+            e.printStackTrace();
         }
     }
 
-    public void modifyTableReprobated(ConnectionMySQL CMySQL,Reprobated rep){
 
-        String sql = "UPDATE Reprobated SET ID='"+rep.getIDStudent()+"',CodeSubject='"+rep.getCodeSubject()+"' WHERE IDStudent = '"+rep.getIDStudent()+"'";
-        try (Connection conn = CMySQL.conectarMySQL()){
 
-            PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            int filasActualizadas = pstmt.executeUpdate();
 
-            if (filasActualizadas > 0) {
-                System.out.println("¡Registro modificado exitosamente!");
-            } else {
-                System.out.println("No se encontró un registro con ese ID.");
-            }
 
-        } catch (SQLException e) {
-            System.err.println("Error al modificar los datos: " + e.getMessage());
-        }
-    }
-    
-    public void ExtractTableUser(ConnectionMySQL CMySQL,User user){
 
-        String sql = "SELECT * FROM User WHERE ID = '"+user.getID()+"'";
-        try (Connection conn = CMySQL.conectarMySQL();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                String id = rs.getString("ID");
-                String name = rs.getString("Name");
-                String lastname = rs.getString("Lastname");
-                String email = rs.getString("email"); 
 
-                System.out.println(id + name);
-        }
 
-        } catch (SQLException e) {
+
+
+
+
+
+
+
+
+
+
+    // validaciones
+
+    // por terminar el hash salt y la validacion de login
+    public String ValidationLogin(String idValue,String passwordValue){
+
+        String sql = "select ID,SHA2(CONCAT(password,salt), 512) as hashed_password from User where ID = ? and password = SHA2(CONCAT(?, salt), 512)";
+        try (Connection conn = conectarMySQL();
+             PreparedStatement pstmt = conn.prepareStatement(sql);) {
+
+                    pstmt.setString(1, idValue);
+                    pstmt.setString(2, passwordValue);
+
+                    ResultSet rs = pstmt.executeQuery();
+                 if (rs.next()) {
+                    SetIDvalue(idValue);
+                    sql = "true";
+                    InsertTableBitacora( idValue, "inicio de sesión");
+                    }else{
+                    sql ="false";
+                 }
+                 System.out.println( sql);
+        }catch (SQLException e) {
             System.err.println("Error al consultar los datos: " + e.getMessage());
-        }
-
-    }
+        }      
+    return sql;          
     
-    public void ExtractTableSubject(ConnectionMySQL CMySQL,Subject sub){
+}
 
-    String sql = "SELECT * FROM Subject WHERE Code = '"+sub.getCode()+"'";  
 
-    try(Connection conn = CMySQL.conectarMySQL()){
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery();
-            while(rs.next()){
-                String code = rs.getString("Code");
-                String name = rs.getString("Name");
-                int semester = rs.getInt("Semester");
-                int unit_credit = rs.getInt("Unit_Credit");
-            }
-            }catch(SQLException e){
-    System.err.println("Error al consultar los datos: " + e.getMessage());
-   }
-    }
 
-    public void ExtractTableStudent(ConnectionMySQL CMySQL,Student stu){
+ public boolean ValidationRegister(String idValue,String emailValue){
 
-    String sql = "SELECT * FROM Student WHERE ID= '"+stu.getID()+"'";
-
-    try (Connection conn = CMySQL.conectarMySQL()){
-        PreparedStatement pstmt = conn.prepareStatement(sql);
+    String sql= "select ID,email from User where ID = ? or Email = ?";
+    try(Connection conn = conectarMySQL();
+        PreparedStatement pstmt = conn.prepareStatement(sql);){
+        pstmt.setString(1, idValue);
+        pstmt.setString(2, emailValue);
         ResultSet rs = pstmt.executeQuery();
 
-        while(rs.next()){
-            
-            String name = rs.getString("name");
-            String lastname = rs.getString("lastname");
-            String career = rs.getString("career");
-            String tuition = rs.getString("tuition");
-        }  
-    } catch (SQLException e) {
-        e.printStackTrace();
-        
-    }
-
-    }
-    
-    public void ExtractTableReprobated(ConnectionMySQL CMySQL,Reprobated rep){
-        String sql = "SELECT stu.ID, stu.Name, sub.Code, sub.name FROM reprobated rep "
-        +" INNER JOIN Student stu ON rep.IDStudent = stu.ID "
-        +" INNER JOIN Subject sub ON rep.CodeSubject = sub.Code "
-        +" WHERE rep.IDStudent = '32066670';";
-
-        try (Connection conn = CMySQL.conectarMySQL();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            ResultSet rs = pstmt.executeQuery()){
-        
-        while(rs.next()){
-        int ID = rs.getInt("ID");
-        int Code = rs.getInt("Code");
-        String nameSubject = rs.getString("Name");
-        String nameStudent = rs.getString("Name");
-
-        System.out.println(ID + Code + nameStudent + nameSubject +"1");
-        }    
-        } catch (SQLException e) {
-            System.out.println(e);
+            if(rs.next()) {
+        System.out.println("usuario ya existe");
+        return true;
+             }
+        }catch (SQLException e) {
+            System.err.println("Error al consultar los datos: " + e.getMessage());
         }
+        System.out.println("usuario no existente");
+            return false;
     }
 }
