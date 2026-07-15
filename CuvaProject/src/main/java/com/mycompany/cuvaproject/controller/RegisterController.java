@@ -20,7 +20,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
+
 import com.mycompany.cuvaproject.services.serviceUser;
+import com.mycompany.cuvaproject.models.User;
+import com.mycompany.cuvaproject.data_base.Data_Manipulator;
+import com.mycompany.cuvaproject.data_base.ConnectionMySQL;
 
 public class RegisterController implements Initializable {
     
@@ -36,7 +40,6 @@ public class RegisterController implements Initializable {
     @FXML private TextField post;
     @FXML private ComboBox<String> cmbRol;
 
-    // Labels de error inyectados desde FXML
     @FXML private Label lblErrorId;
     @FXML private Label lblErrorName;
     @FXML private Label lblErrorLastName;
@@ -44,27 +47,23 @@ public class RegisterController implements Initializable {
     @FXML private Label lblErrorPasswordTwo;
     @FXML private Label lblErrorEmail;
     
-    
     private Label lblSuccess;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cmbRol.getSelectionModel().select("Admin");
         
-        // Inicializar dinámicamente el label de éxito
         lblSuccess = new Label();
         lblSuccess.setTextFill(Color.GREEN);
         lblSuccess.setFont(Font.font("System", FontWeight.BOLD, 14));
         lblSuccess.setVisible(false);
         lblSuccess.setWrapText(true);
         
-        // Buscar el VBox contenedor del formulario para añadir el label debajo del botón Crear
         if (btnRegister != null && btnRegister.getParent() instanceof VBox) {
             VBox contenedorTarjeta = (VBox) btnRegister.getParent();
             contenedorTarjeta.getChildren().add(lblSuccess);
         }
         
-        // Configurar los listeners para validar al perder el foco (Focus Loss)
         setupFocusListener(id, lblErrorId, "ID");
         setupFocusListener(name, lblErrorName, "NAME");
         setupFocusListener(lastname, lblErrorLastName, "LASTNAME");
@@ -150,7 +149,6 @@ public class RegisterController implements Initializable {
         } catch (IllegalArgumentException e) {
             lblError.setText(e.getMessage());
             lblError.setVisible(true);
-            // Si hay un error, ocultamos el aviso de éxito por seguridad
             if (lblSuccess != null) lblSuccess.setVisible(false);
             return false;
         }
@@ -158,7 +156,6 @@ public class RegisterController implements Initializable {
 
     @FXML
     private void handleUser(ActionEvent event) {
-        // Al intentar crear, ocultamos cualquier aviso previo de éxito
         lblSuccess.setVisible(false);
 
         boolean isValid = true;
@@ -187,12 +184,31 @@ public class RegisterController implements Initializable {
             return;
         }
         
-        // Creación del usuario a través del servicio
-        serviceUser service = new serviceUser();
-        service.create(nameValue, lastNameValue, idValue, passwordValue, emailValue, postValue, rolValue);
-        
-        // Muestra el aviso en verde en la interfaz
-        lblSuccess.setText("¡Usuario creado exitosamente!");
-        lblSuccess.setVisible(true);
+        if (create(nameValue, lastNameValue, idValue, passwordValue, emailValue, postValue, rolValue)) { 
+            lblSuccess.setText("¡Usuario creado exitosamente!");
+            lblSuccess.setTextFill(Color.GREEN);
+            lblSuccess.setVisible(true);
+        } else {
+            lblSuccess.setText("¡error al crear al usuario!");
+            lblSuccess.setTextFill(Color.RED);
+            lblSuccess.setVisible(true);
+        }
+    }
+    
+    private boolean create(String nameValue, String lastNameValue, String idValue, String passwordValue, String emailValue, String postValue, String rolValue) {
+        try {
+            serviceUser service = new serviceUser();
+            User nuevoUsuario = service.create(nameValue, lastNameValue, idValue, passwordValue, emailValue, postValue, rolValue);
+            
+            Data_Manipulator manipulator = new Data_Manipulator();
+            ConnectionMySQL CMySQL = new ConnectionMySQL();
+            
+            boolean seGuardo = manipulator.InsertTableUser(CMySQL, nuevoUsuario);
+            return seGuardo;
+            
+        } catch (Exception e) {
+            System.err.println("Error durante la creación: " + e.getMessage());
+            return false;
+        }
     }
 }

@@ -1,8 +1,9 @@
 package com.mycompany.cuvaproject.data_base;
-import java.sql.Connection; // maneja la conexión a la base de datos
-import java.sql.PreparedStatement;// permite ejecutar consultas SQL con parámetros
-import java.sql.ResultSet; // maneja los resultados de las consultas SQL
-import java.sql.SQLException; // maneja los errores relacionados con SQL
+
+import java.sql.Connection; 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet; 
+import java.sql.SQLException; 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -12,7 +13,6 @@ import com.mycompany.cuvaproject.models.Subject;
 import com.mycompany.cuvaproject.models.Reprobated;
 
 public class Data_Manipulator {
-    // Métodos de la tabla bitacora
     
     public void InsertTableBitacora(ConnectionMySQL CMySQL,String idValue,String action){
 
@@ -29,7 +29,7 @@ public class Data_Manipulator {
         }
     }
 
-        public ArrayList<String> ExtractTableBitacora(ConnectionMySQL CMySQL){
+    public ArrayList<String> ExtractTableBitacora(ConnectionMySQL CMySQL){
         ArrayList<String> bitacora = new ArrayList<>();
 
         String sql = "select bita.time,u.name,u.lastname,bita.action from bitacora bita inner join user u on bita.IDUser = u.ID  order by bita.time desc";
@@ -48,43 +48,35 @@ public class Data_Manipulator {
                 bitacora.add(b);
             };
             System.out.println("se saco de la bitacora");
-    } catch (SQLException e) {
-        e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return bitacora;
     }
 
-    return bitacora;
-    }
+    public boolean InsertTableUser(ConnectionMySQL CMySQL,User user){
 
-    
-    // Metodos de la tabla user
-
-    public void InsertTableUser(ConnectionMySQL CMySQL,User user){
-
-        // Consulta SQL en este caso Insertar
         String sql = "INSERT INTO user (Name,LastName,ID,Email,Password,IDPost) VALUES ('"+user.getName()+"','"+user.getLastName()+"','"+user.getID()+"','"+user.getEmail()+"','"+user.getPassword()+"','"+user.getPost()+"')";
 
-        //conecta a la base de datos
         try (Connection conn = CMySQL.conectarMySQL()) {
             
-            // prepara la consulta SQL
             PreparedStatement pstmt = conn.prepareStatement(sql);
             
-            // el "pstmt" ejecutar la inserción
-              int filasAfectadas = pstmt.executeUpdate();
-                if (filasAfectadas > 0) {
-                    System.out.println("se guardo el usuario");
-                    InsertTableBitacora(CMySQL,user.getID(),"Insertó un nuevo usuario");
-                }
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                System.out.println("se guardo el usuario");
+                InsertTableBitacora(CMySQL,user.getID(),"Insertó un nuevo usuario");
+                return true;
+            }
         } catch (SQLException e) {
             System.err.println("Error al insertar el usuario: " + e.getMessage());
         }
-
+        return false;
     }
 
     public void DeleteInTableUser(ConnectionMySQL CMySQL,User user,String idValue){
-        // Consulta SQL en este caso Borrar
         String sql = "DELETE FROM user WHERE ID = '"+user.getID()+"'";
-        // conecta a la base de datos
         try (Connection conn = CMySQL.conectarMySQL()) {
             
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -118,10 +110,7 @@ public class Data_Manipulator {
         }
     }
     
-    // Metodos de la tabla Subject
-
     public void InsertTableSubject(ConnectionMySQL CMySQL,Subject sub){
-        // este metodo no guarda en la bitacora ya que es automatico con el scanner del pensum ()
         String sql = "INSERT INTO Subject (Code,Semester,Unit_Credit,Name) VALUES ('"+sub.getCode()+"','"+sub.getSemester()+"','"+sub.getUnit_credit()+"','"+sub.getName()+"')";
         
         try (Connection conn = CMySQL.conectarMySQL()) {
@@ -172,8 +161,6 @@ public class Data_Manipulator {
             System.err.println("Error al modificar los datos de la materia: " + e.getMessage());
         }
     }
-
-    // Metodos de la tabla Student
 
     public void InsertTableStudent(ConnectionMySQL CMySQL,Student stu,String idValue){
 
@@ -230,10 +217,6 @@ public class Data_Manipulator {
         }
     }
     
-    
-    // Metodos de la tabla Reprobated
-    
-    // este metodo no guarda en la bitacora, ya que es automatio con el scanner de reprobados
     public void InsertTableReprobated(ConnectionMySQL CMySQL,Reprobated rep){
 
         String sql = "INSERT INTO Reprobated (IDStudent,CodeSubject,grade,period) VALUES ('"+rep.getIDStudent()+"','"+rep.getCodeSubject()+"','"+rep.getGrade()+"','"+rep.getPeriod()+"')";
@@ -290,19 +273,6 @@ public class Data_Manipulator {
         }
     }
     
-
-
-
-
-
-    
-
-
-
-
-    
-    //metodo para extraer datos de las tablas
-
     public void ExtractTableUser(ConnectionMySQL CMySQL,User user){
 
         String sql = "SELECT * FROM User WHERE ID = '"+user.getID()+"'";
@@ -310,9 +280,7 @@ public class Data_Manipulator {
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
-            // Iterar sobre el ResultSet para extraer los datos
             while (rs.next()) {
-                // Extrae datos por el nombre de la columna
                 String id = rs.getString("ID");
                 String name = rs.getString("Name");
                 String lastname = rs.getString("Lastname");
@@ -365,8 +333,6 @@ public class Data_Manipulator {
         
     }
 
-
-
     }
     
     public void ExtractTableReprobated(ConnectionMySQL CMySQL,Reprobated rep){
@@ -390,10 +356,5 @@ public class Data_Manipulator {
         } catch (SQLException e) {
             System.out.println(e);
         }
-
-        
     }
-
-
-
 }

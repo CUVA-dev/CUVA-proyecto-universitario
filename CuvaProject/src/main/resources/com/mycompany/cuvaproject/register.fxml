@@ -33,7 +33,6 @@
                   
                   <GridPane hgap="10.0" vgap="15.0">
                      <children>
-                        <!-- CÉDULA -->
                         <Label cache="true" prefHeight="20.0" prefWidth="54.0" styleClass="label-formulario" text="Cédula:" GridPane.columnIndex="0" GridPane.rowIndex="0">
                            <font>
                               <Font name="System Bold" size="14.0" />
@@ -57,11 +56,14 @@
                                     <TextField fx:id="id" prefWidth="130.0" styleClass="input-formulario" />
                                  </children>
                               </HBox>
-                              <Label fx:id="lblErrorId" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                              <Label fx:id="lblErrorId" text="" textFill="RED" visible="false" wrapText="true">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </VBox>
                         
-                        <!-- NOMBRE -->
                         <Label cache="true" styleClass="label-formulario" text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="1">
                            <font>
                               <Font name="System Bold" size="14.0" />
@@ -70,11 +72,14 @@
                         <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
                               <TextField fx:id="name" maxWidth="230.0" prefWidth="100.0" styleClass="input-formulario" />
-                              <Label fx:id="lblErrorName" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                              <Label fx:id="lblErrorName" text="" textFill="RED" visible="false" wrapText="true">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </VBox>
                         
-                        <!-- APELLIDO -->
                         <Label cache="true" mnemonicParsing="true" styleClass="label-formulario" text="Apellido:" GridPane.columnIndex="0" GridPane.rowIndex="2">
                            <font>
                               <Font name="System Bold" size="14.0" />
@@ -83,11 +88,14 @@
                         <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <children>
                               <TextField fx:id="lastname" maxWidth="230.0" prefWidth="150.0" styleClass="input-formulario" />
-                              <Label fx:id="lblErrorLastName" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                              <Label fx:id="lblErrorLastName" text="" textFill="RED" visible="false" wrapText="true">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </VBox>
                         
-                        <!-- CONTRASEÑA -->
                         <Label cache="true" styleClass="label-formulario" text="Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="3">
                            <font>
                               <Font name="System Bold" size="14.0" />
@@ -96,11 +104,14 @@
                         <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <children>
                               <PasswordField fx:id="password" maxHeight="120.0" maxWidth="180.0" prefHeight="35.0" prefWidth="135.0" styleClass="input-formulario" />
-                              <Label fx:id="lblErrorPassword" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                              <Label fx:id="lblErrorPassword" text="" textFill="RED" visible="false" wrapText="true">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </VBox>
                         
-                        <!-- CONFIRMAR CONTRASEÑA -->
                         <Label cache="true" styleClass="label-formulario" text="Confirmar:" GridPane.columnIndex="0" GridPane.rowIndex="4">
                            <font>
                               <Font name="System Bold" size="14.0" />
@@ -109,11 +120,14 @@
                         <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                            <children>
                               <PasswordField fx:id="password_two" maxWidth="180.0" prefHeight="35.0" prefWidth="135.0" styleClass="input-formulario" />
-                              <Label fx:id="lblErrorPasswordTwo" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                              <Label fx:id="lblErrorPasswordTwo" text="" textFill="RED" visible="false" wrapText="true">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </VBox>
                         
-                        <!-- CORREO -->
                         <Label cache="true" styleClass="label-formulario" text="Correo:" GridPane.columnIndex="0" GridPane.rowIndex="5">
                            <font>
                               <Font name="System Bold" size="14.0" />
@@ -122,11 +136,14 @@
                         <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                            <children>
                               <TextField fx:id="email" prefWidth="260.0" styleClass="input-formulario" />
-                              <Label fx:id="lblErrorEmail" text="" textFill="RED" visible="false" wrapText="true"><font><Font size="11.0" /></font></Label>
+                              <Label fx:id="lblErrorEmail" text="" textFill="RED" visible="false" wrapText="true">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </VBox>
                         
-                        <!-- CARGO / ROL -->
                         <Label cache="true" styleClass="label-formulario" text="Cargo:" GridPane.columnIndex="0" GridPane.rowIndex="6">
                            <font>
                               <Font name="System Bold" size="14.0" />

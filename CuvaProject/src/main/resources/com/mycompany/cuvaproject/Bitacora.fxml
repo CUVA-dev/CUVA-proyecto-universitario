@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="bitacoraRoot" prefHeight="600.0" prefWidth="1000.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.cuvaproject.controller.BitacoraController">
+<AnchorPane id="AnchorPane" fx:id="bitacoraRoot" prefHeight="600.0" prefWidth="1000.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.cuvaproject.controller.BinnacleController">
     <stylesheets>
         <URL value="@/com/mycompany/cuvaproject/bitacora.css" />
     </stylesheets>
@@ -32,18 +32,18 @@
             <GridPane hgap="15.0" styleClass="tabla-cabecera">
                <columnConstraints>
                   <ColumnConstraints hgrow="ALWAYS" minWidth="150.0" prefWidth="180.0" />
-                  <ColumnConstraints hgrow="ALWAYS" minWidth="150.0" prefWidth="180.0" />
                   <ColumnConstraints hgrow="ALWAYS" minWidth="120.0" prefWidth="150.0" />
                   <ColumnConstraints hgrow="ALWAYS" minWidth="120.0" prefWidth="150.0" />
+                  <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" prefWidth="250.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="35.0" prefHeight="35.0" />
                </rowConstraints>
                <children>
-                  <Label text="Nombre" styleClass="label-cabecera" GridPane.columnIndex="0" />
-                  <Label text="Apellido" styleClass="label-cabecera" GridPane.columnIndex="1" />
-                  <Label text="Cédula" styleClass="label-cabecera" GridPane.columnIndex="2" />
-                  <Label text="Fecha Ingreso" styleClass="label-cabecera" GridPane.columnIndex="3" />
+                  <Label text="Fecha / Hora" styleClass="label-cabecera" GridPane.columnIndex="0" />
+                  <Label text="Nombre" styleClass="label-cabecera" GridPane.columnIndex="1" />
+                  <Label text="Apellido" styleClass="label-cabecera" GridPane.columnIndex="2" />
+                  <Label text="Acción Realizada" styleClass="label-cabecera" GridPane.columnIndex="3" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
@@ -52,64 +52,15 @@
             
             <ScrollPane fitToWidth="true" styleClass="scroll-registros" VBox.vgrow="ALWAYS">
                <content>
-                  <GridPane hgap="15.0" vgap="10.0" styleClass="tabla-cuerpo">
+                  <GridPane fx:id="gridCuerpo" hgap="15.0" vgap="10.0" styleClass="tabla-cuerpo">
                      <columnConstraints>
                         <ColumnConstraints hgrow="ALWAYS" minWidth="150.0" prefWidth="180.0" />
-                        <ColumnConstraints hgrow="ALWAYS" minWidth="150.0" prefWidth="180.0" />
                         <ColumnConstraints hgrow="ALWAYS" minWidth="120.0" prefWidth="150.0" />
                         <ColumnConstraints hgrow="ALWAYS" minWidth="120.0" prefWidth="150.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" prefWidth="250.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="35.0" />
-                        <RowConstraints minHeight="35.0" />
-                        <RowConstraints minHeight="35.0" />
-                        <RowConstraints minHeight="35.0" />
-                        <RowConstraints minHeight="35.0" />
-                        <RowConstraints minHeight="35.0" />
-                        <RowConstraints minHeight="35.0" />
-                        <RowConstraints minHeight="35.0" />
-                     </rowConstraints>
-                     <children>
-                        <Label text="Jose" styleClass="label-celda" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <Label text="Dudamel" styleClass="label-celda" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Label text="12432004" styleClass="label-celda" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                        <Label text="10/06/2026" styleClass="label-celda" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-                        
-                        <Label text="Piterson" styleClass="label-celda" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <Label text="Alvarado" styleClass="label-celda" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label text="30325147" styleClass="label-celda" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <Label text="12/06/2026" styleClass="label-celda" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                        
-                        <Label text="Javier" styleClass="label-celda" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                        <Label text="Mendoza" styleClass="label-celda" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label text="29876543" styleClass="label-celda" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                        <Label text="14/06/2026" styleClass="label-celda" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                        
-                        <Label text="Pitcherson" styleClass="label-celda" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                        <Label text="García" styleClass="label-celda" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Label text="31024855" styleClass="label-celda" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                        <Label text="15/06/2026" styleClass="label-celda" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                        
-                        <Label text="Carlos" styleClass="label-celda" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                        <Label text="Rodríguez" styleClass="label-celda" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <Label text="27555444" styleClass="label-celda" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                        <Label text="18/06/2026" styleClass="label-celda" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                        
-                        <Label text="María" styleClass="label-celda" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                        <Label text="Yépez" styleClass="label-celda" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <Label text="28111222" styleClass="label-celda" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                        <Label text="19/06/2026" styleClass="label-celda" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-                        
-                        <Label text="Luis" styleClass="label-celda" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-                        <Label text="Castillo" styleClass="label-celda" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                        <Label text="26999888" styleClass="label-celda" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                        <Label text="20/06/2026" styleClass="label-celda" GridPane.columnIndex="3" GridPane.rowIndex="6" />
-                        
-                        <Label text="Ana" styleClass="label-celda" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-                        <Label text="Martínez" styleClass="label-celda" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                        <Label text="30123456" styleClass="label-celda" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-                        <Label text="22/06/2026" styleClass="label-celda" GridPane.columnIndex="3" GridPane.rowIndex="7" />
-                     </children>
+                        </rowConstraints>
                   </GridPane>
                </content>
             </ScrollPane>
