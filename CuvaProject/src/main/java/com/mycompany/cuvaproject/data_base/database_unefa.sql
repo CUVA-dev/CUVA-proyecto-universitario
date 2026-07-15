@@ -1,3 +1,7 @@
+
+-- activa los eventos
+SET GLOBAL event_scheduler = ON;
+
 -- crea la base de datos si no existe
 create database if not exists database_unefa;
 
@@ -5,77 +9,97 @@ create database if not exists database_unefa;
 use database_unefa;
 
 
--- tabla de los cargos
-create table if not exists Post
-(
-IDP varchar(50) primary key,
-name varchar(50)
-);
-
-
 -- tabla usuario
 create table if not exists User
 (
-Name varchar(100),
-LastName varchar(100),
-ID varchar(50) primary key not null unique, 
+Name varchar(100)not null ,
+LastName varchar(100)not null,
+ID varchar(50) primary key, 
 Email varchar(50) not null unique,
-Password varchar(15) not null,
-IDPost varchar(50),
-foreign key (IDPost) references Post(IDP)
+Password varchar(128)not null,
+salt varchar(32),
+Post varchar(50),
+rangee varchar(50) not null
+);
+
+-- tabla para la duracion de los ususarios temporales (Invitados)
+create table if not exists UserDuration
+(
+FKIDUser varchar(50),
+foreign key (FKIDUser) references User(ID),
+dateCreate date default now()
 );
 
 -- tabla materia
 create table if not exists Subject
 (
-Code varchar(100) primary key not null unique,
+Code varchar(100) primary key,
 Name varchar(100),
 Unit_Credit int,
-Semester varchar(3)
+Semester int
 );
 
+-- tabla prelacion de materia
 create table if not exists priority
 (
-CodeSubject varchar(100),
+FKCodeSubject varchar(100),
 priority varchar(100),
-foreign key (codesubject) references subject(code)
+foreign key (FKcodesubject) references subject(code)
 );
 
 
 -- crea la tabla estudiante
 create table if not exists Student
 (
-ID varchar(50) primary key not null unique,
+ID varchar(50) primary key,
 Name varchar(100),
 Lastname varchar(100),
-career text,
+career varchar(100),
+Unit_Credit int,
 Tuition varchar(100)
 );
-
 
 -- tabla reprobados
 create table if not exists reprobated
 (
-IDStudent varchar(50),
-CodeSubject varchar(100),
-foreign key (IDStudent) references Student(ID),
-foreign key (CodeSubject) references Subject(code),
+FKIDStudent varchar(50),
+FKCodeSubject varchar(100),
+foreign key (FKIDStudent) references Student(ID),
+foreign key (FKCodeSubject) references Subject(code),
 grade varchar(50),
-period varchar(50)
+period varchar(50),
+primary key (FKIDStudent,FKCodeSubject,grade,period)
 );
 
 -- tabla bitacora
 create table if not exists Bitacora
 (
-time timestamp , -- año,mes,dia,hora,minuto,seg
-IDUser varchar(100),
+timee timestamp default now() , -- año,mes,dia,hora,minuto,seg
+FKIDUser varchar(100),
 action varchar(300),
-foreign key (IDUser) references User(ID)
-
+foreign key (FKIDUser) references User(ID)
 );
 
-insert into post(IDP,Name) values("c","coordinador");
-insert into user (Name,LastName,ID,Email,Password,IDPost) VALUES ("","","Admin","","Admin","c");
+-- crea un evento para que borre automaticamente los registro despues de 30 dias
+delimiter //
+create event if not exists Delete30daysLefts
+on schedule every 1 day
+starts current_date
+do 
+begin
+delete u,UD from UserDuration UD
+inner join User u on u.ID = UD.FKIDUser
+where UD.dateCreate = current_date() - interval 30 day;
+delete from bitacora where timee < current_date() - interval 30 day;
+end //
+delimiter ;
+
+-- a partir de aqui son los insert manuales de la base de datos
+
+set @salt = MD5(RAND());
+insert into user (Name,LastName,ID,Email,Password,salt,Post,rangee) VALUES ("Admin","Admin","Admin","Admin",SHA2(CONCAT('Admin',@salt), 512),@salt,"c","Admin");
+
+
 insert into Subject (code, name, Unit_Credit, Semester) VALUES 
 ("ADG-25132", "EDUCACIÓN AMBIENTAL", 2, "1"),
 ("ADG-25123", "HOMBRE, SOCIEDAD, CIENCIA Y TEC", 2, "1"),
@@ -132,7 +156,7 @@ insert into Subject (code, name, Unit_Credit, Semester) VALUES
 ("TTC-31154", "TELEPROCESOS", 3, "10"),
 ("TGR-30010", "TRABAJO ESPECIAL DE GRADO", 0, "10");
 
-insert into priority(CodeSubject,priority) values
+insert into priority(FKCodeSubject,priority) values
 ("IDM-24123", "IDM-24113"),
 ("QUF-22014", "MAT-21215"),
 ("QUF-22014", "MAT-21524"),
