@@ -19,8 +19,7 @@ public class BinnacleController implements Initializable {
     
     @FXML
     private GridPane gridCuerpo; // Vinculación con el FXML
-
-    ConnectionMySQL CMySQL = new ConnectionMySQL();
+    
     Data_Manipulator ObjDataM = new Data_Manipulator();
 
     @Override
