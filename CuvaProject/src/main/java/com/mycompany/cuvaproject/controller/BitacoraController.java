@@ -1,7 +1,6 @@
 
 package com.mycompany.cuvaproject.controller;
 
-import com.mycompany.cuvaproject.data_base.ConnectionMySQL;
 import com.mycompany.cuvaproject.data_base.Data_Manipulator;
 
 import java.net.URL;
@@ -14,13 +13,12 @@ import javafx.fxml.Initializable;
  * @author Usuario
  */
 public class BitacoraController implements Initializable {
-    ConnectionMySQL CMySQL = new ConnectionMySQL();
     Data_Manipulator ObjDataM = new Data_Manipulator();
 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        for (String entry : ObjDataM.ExtractTableBitacora(CMySQL)) {
+        for (String entry : ObjDataM.ExtractTableBitacora()) {
             System.out.println(entry);
         }
     }    
