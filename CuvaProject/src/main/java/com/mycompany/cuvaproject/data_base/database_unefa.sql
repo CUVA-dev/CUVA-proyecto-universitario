@@ -104,7 +104,7 @@ delimiter ;
 
 -- a partir de aqui son los insert manuales de la base de datos
 
-insert into post() values ("Coordinador","Coordinador"),("Director","Director");
+insert into post(IDP,name) values ("Coordinador","Coordinador"),("Director","Director");
 
 set @salt = MD5(RAND());
 insert into user (Name,LastName,ID,Email,Password,salt,FKIDPost,rangee) VALUES ("Admin","Admin","Admin","Admin",SHA2(CONCAT('Admin',@salt), 512),@salt,"Coordinador","Admin");
