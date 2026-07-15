@@ -72,7 +72,7 @@ public class Data_Manipulator extends ConnectionMySQL{
 
     // Metodos de la tabla user
 
-    public void InsertTableUser(User user){
+    public boolean InsertTableUser(User user){
 
 
         SecureRandom sr = new SecureRandom();
@@ -112,9 +112,11 @@ public class Data_Manipulator extends ConnectionMySQL{
                 pstmt.executeUpdate();
                 System.out.println("se guardo el usuario temporal");
             }
+
+            return true;
         } catch (SQLException e) {
             System.out.println(e);
-        }
+        }return false;
 
     }
 
