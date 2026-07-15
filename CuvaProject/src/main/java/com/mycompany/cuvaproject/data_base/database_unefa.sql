@@ -1,4 +1,3 @@
-
 -- activa los eventos
 SET GLOBAL event_scheduler = ON;
 
@@ -7,6 +6,14 @@ create database if not exists database_unefa;
 
 -- usa la base de datos
 use database_unefa;
+
+
+-- tabla de los cargos
+create table if not exists Post
+(
+IDP varchar(50) primary key,
+name varchar(50)
+);
 
 
 -- tabla usuario
@@ -18,7 +25,8 @@ ID varchar(50) primary key,
 Email varchar(50) not null unique,
 Password varchar(128)not null,
 salt varchar(32),
-Post varchar(50),
+FKIDPost varchar(50),
+foreign key (FKIDPost) references Post(IDP),
 rangee varchar(50) not null
 );
 
@@ -96,8 +104,10 @@ delimiter ;
 
 -- a partir de aqui son los insert manuales de la base de datos
 
+insert into post() values ("Coordinador","Coordinador");
+
 set @salt = MD5(RAND());
-insert into user (Name,LastName,ID,Email,Password,salt,Post,rangee) VALUES ("Admin","Admin","Admin","Admin",SHA2(CONCAT('Admin',@salt), 512),@salt,"c","Admin");
+insert into user (Name,LastName,ID,Email,Password,salt,FKIDPost,rangee) VALUES ("Admin","Admin","Admin","Admin",SHA2(CONCAT('Admin',@salt), 512),@salt,"Coordinador","Admin");
 
 
 insert into Subject (code, name, Unit_Credit, Semester) VALUES 
