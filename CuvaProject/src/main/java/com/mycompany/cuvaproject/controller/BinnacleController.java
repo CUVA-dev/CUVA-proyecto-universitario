@@ -1,6 +1,5 @@
 package com.mycompany.cuvaproject.controller;
 
-import com.mycompany.cuvaproject.data_base.ConnectionMySQL;
 import com.mycompany.cuvaproject.data_base.Data_Manipulator;
 
 import java.net.URL;
@@ -30,7 +29,7 @@ public class BinnacleController implements Initializable {
     }    
     
     private void cargarDatosBitacora() {
-        List<String> entries = ObjDataM.ExtractTableBitacora(CMySQL);
+        List<String> entries = ObjDataM.ExtractTableBitacora();
         
         if (entries == null || entries.isEmpty()) {
             System.out.println("No se recibieron registros de la bitácora.");
