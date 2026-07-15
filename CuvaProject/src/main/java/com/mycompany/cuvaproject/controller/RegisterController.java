@@ -36,7 +36,7 @@ public class RegisterController implements Initializable {
     @FXML private TextField password;
     @FXML private TextField password_two;
     @FXML private TextField email;
-    @FXML private TextField post;
+    @FXML private ComboBox<String> post;
     @FXML private ComboBox<String> cmbRol;
 
     @FXML private Label lblErrorId;
@@ -175,7 +175,7 @@ public class RegisterController implements Initializable {
         String idValue = id.getText();
         String passwordValue = password.getText();
         String emailValue = email.getText();
-        String postValue = post.getText();
+        String postValue = post.getValue();
         String rolValue = cmbRol.getValue();
         
         if (rolValue == null) {
