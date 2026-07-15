@@ -184,14 +184,15 @@ public class User {
 
     // Agrupador de validaciones
     public void validated() {
+
+        if(ObjDataM.ValidationRegister(ID, email)== false){
         validated_ID();
         validated_name();
         validated_lastName();
         validated_email();
         validated_password();
 
-        if(ObjDataM.ValidationRegister(ID, email)== false){
-        ObjDataM.InsertTableUser(this);
+            
         }
     }
 }
