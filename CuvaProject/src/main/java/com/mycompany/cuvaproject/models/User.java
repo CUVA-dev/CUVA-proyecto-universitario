@@ -2,15 +2,11 @@
 
 package com.mycompany.cuvaproject.models;
 
-import com.mycompany.cuvaproject.data_base.Validation;
 import com.mycompany.cuvaproject.data_base.Data_Manipulator;
-import com.mycompany.cuvaproject.data_base.ConnectionMySQL;
 
 public class User {
     
-    ConnectionMySQL ObjCMySQL = new ConnectionMySQL();
     Data_Manipulator ObjDataM = new Data_Manipulator();
-    Validation v = new Validation();
     
     private String name;
     private String lastName;
@@ -194,8 +190,8 @@ public class User {
         validated_email();
         validated_password();
 
-        if(v.ValidationRegister(ObjCMySQL, ID, email)== false){
-        ObjDataM.InsertTableUser(ObjCMySQL,this);
+        if(ObjDataM.ValidationRegister(ID, email)== false){
+        ObjDataM.InsertTableUser(this);
         }
     }
 }
