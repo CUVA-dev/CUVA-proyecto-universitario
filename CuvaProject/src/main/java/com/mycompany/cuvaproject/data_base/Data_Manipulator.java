@@ -16,7 +16,7 @@ import com.mycompany.cuvaproject.models.Reprobated;
 
 public class Data_Manipulator extends ConnectionMySQL{
 
-    private String IDvalue;
+    private static String IDvalue;
     public void SetIDvalue(String IDvalue) {this.IDvalue = IDvalue;}
     public String getIDvalue() {return IDvalue;}
     
