@@ -24,7 +24,6 @@ import javafx.util.Duration;
 import com.mycompany.cuvaproject.services.serviceUser;
 import com.mycompany.cuvaproject.models.User;
 import com.mycompany.cuvaproject.data_base.Data_Manipulator;
-import com.mycompany.cuvaproject.data_base.ConnectionMySQL;
 
 public class RegisterController implements Initializable {
     
@@ -201,9 +200,8 @@ public class RegisterController implements Initializable {
             User nuevoUsuario = service.create(nameValue, lastNameValue, idValue, passwordValue, emailValue, postValue, rolValue);
             
             Data_Manipulator manipulator = new Data_Manipulator();
-            ConnectionMySQL CMySQL = new ConnectionMySQL();
             
-            boolean seGuardo = manipulator.InsertTableUser(CMySQL, nuevoUsuario);
+            boolean seGuardo = manipulator.InsertTableUser(nuevoUsuario);
             return seGuardo;
             
         } catch (Exception e) {
