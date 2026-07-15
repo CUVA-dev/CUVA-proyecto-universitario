@@ -1,11 +1,9 @@
 package com.mycompany.cuvaproject.models;
 
 import com.mycompany.cuvaproject.data_base.Data_Manipulator;
-import com.mycompany.cuvaproject.data_base.ConnectionMySQL;
 
 public class Reprobated {
-
-        ConnectionMySQL ObjCMySQL = new ConnectionMySQL();
+        
         Data_Manipulator ObjDataM = new Data_Manipulator();
 
     private String nameStudent;
@@ -23,7 +21,7 @@ public class Reprobated {
         this.nameSubject = nameSubject;
         this.period = period;
         this.grade = grade;
-        ObjDataM.InsertTableReprobated(ObjCMySQL,this);
+        ObjDataM.InsertTableReprobated(this);
     }
 
     // Getters
