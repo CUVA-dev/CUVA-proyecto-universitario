@@ -90,6 +90,7 @@ foreign key (FKIDUser) references User(ID)
 
 -- crea un evento para que borre automaticamente los registro despues de 30 dias
 delimiter //
+set sql_safe_updates = 0;
 create event if not exists Delete30daysLefts
 on schedule every 1 day
 starts current_date
@@ -99,6 +100,7 @@ delete u,UD from UserDuration UD
 inner join User u on u.ID = UD.FKIDUser
 where UD.dateCreate = current_date() - interval 30 day;
 delete from bitacora where timee < current_date() - interval 30 day;
+set sql_safe_updates = 1;
 end //
 delimiter ;
 
